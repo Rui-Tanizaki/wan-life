@@ -11,6 +11,36 @@
   </head>
 
   <body>
+    <header class="top-page-header">
+      <div class='search-bar-contents'>
+        <%= link_to image_tag('logo.png', alt: 'ロゴ画像'), root_path, class: "wan_logo" %>
+        <form class="search-form" action="#">  <%#サーチバー部分 ロゴ画像と横並びにしたい。 %>
+          <input class='input-box' placeholder='キーワードから探す'>
+          <button class="search-button">  
+            <div class:"search-icon">検索</div>
+          </button>
+        </form>
+      </div>
+      <div class="nav">
+        <ul class=" lists-left"> <%# 画面左側に全て横並びでメニュー表示 %>
+          <li><%= link_to "ドッグラン", "#" ,class:"dogrun_list" %></li>
+          <li><%= link_to "ドッグカフェ" , "#" ,class:"dogcafe_list" %></li>
+          <li><%= link_to "犬OK宿泊施設" , "#" , class:"doghotel_list" %></li>
+        </ul>
+        <ul class='lists-right'>
+        <% if user_signed_in? %>
+          <li><%= link_to "#{current_user.nickname}さん & #{current_user.dogname}ちゃん", "#", class: "user-nickname" %></li>
+          <li><%= link_to 'ログアウト', destroy_user_session_path, data: {turbo_method: :delete}, class: "logout" %></li>
+        <% else %>
+          <li><%= link_to 'ログイン', new_user_session_path, class: "login" %></li>
+          <li><%= link_to '新規登録', new_user_registration_path, class: "sign-up" %></li>
+        <% end %>
+        </ul>
+      </div>
+    </header>
+
     <%= yield %>
+
+
   </body>
 </html>
