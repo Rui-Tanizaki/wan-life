@@ -1,0 +1,2 @@
+class Dogcafe < ApplicationRecord
+end

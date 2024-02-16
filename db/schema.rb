@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_14_115402) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_15_092451) do
+  create_table "dogcaves", charset: "utf8mb4", force: :cascade do |t|
+    t.string "cafe_name"
+    t.text "cafe_discription"
+    t.string "cafe_postal_code"
+    t.string "cafe_region"
+    t.string "cafe_locality"
+    t.string "cafe_street_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false

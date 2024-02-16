@@ -21,8 +21,8 @@
 }
 
 .wan_logo img {
-  width: 200px; /* 画像の幅を100pxに設定 */
-  height: auto; /* 高さを自動調整 */
+  width: 190px; /* 画像の幅を100pxに設定 */
+  height: 35px; /* 高さを自動調整 */
 }
 
 .top-page-header {
@@ -80,6 +80,20 @@
   align-items: center;
 }
 
+/* 画面幅が小さい場合のスタイル */
+@media screen and (max-width: 600px) {
+  .nav ul {
+    flex-direction: column; /* 項目を縦に並べる */
+    align-items: flex-start; /* 左寄せ */
+  }
+
+  .nav .lists-left li,
+  .nav .lists-right li {
+    margin: 5px 0; /* 項目間のマージンを調整 */
+  }
+
+}
+
 .nav .lists-left li,
 .nav .lists-right li {
   margin: 0 10px;
@@ -104,8 +118,8 @@ margin: 0 auto; /* 上下のマージンを0に、左右を自動調整 */
 }
 
 .title-contents {
-  height:500px;
-  width:69vw;
+  height:75vh;
+  width:68.4vw;
   background-image: url('topimage2.jpg');
   background-size: cover;
   background-repeat: no-repeat;
