@@ -2,8 +2,8 @@ require 'open-uri'
 require 'nokogiri'
 require 'json'
 
-def scrape_cafe_detail(id)
-  url = "https://trimtrim.jp/cafe-detail/#{id}"
+def scrape_run_detail(id)
+  url = "https://trimtrim.jp/dogrun-detail/#{id}"
 
   begin
     html = URI.open(url).read
@@ -41,20 +41,20 @@ def scrape_cafe_detail(id)
   locality = json_ld_data[0]['address']['addressLocality']
   street_address = json_ld_data[0]['address']['streetAddress']
 
-  # Dogcafeモデルのインスタンスを作成
-  dogcave = Dogcave.new(
-    cafe_name: name,
-    cafe_discription: description,
-    cafe_street_address: street_address,
-    cafe_locality: locality,
-    cafe_region: region,
-    cafe_postal_code: postal_code
+  # Dogrunモデルのインスタンスを作成
+  dogrun = Dogrun.new(
+    run_name: name,
+    run_discription: description,
+    run_street_address: street_address,
+    run_locality: locality,
+    run_region: region,
+    run_postal_code: postal_code
   )
 
   # データベースに保存
-  if dogcave.save
+  if dogrun.save
     puts "保存に成功しました"
   else
-    puts "保存に失敗しました: #{dogcafe.errors.full_messages.join(", ")}"
+    puts "保存に失敗しました: #{dogrun.errors.full_messages.join(", ")}"
   end
 end

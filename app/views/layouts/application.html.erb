@@ -3,9 +3,11 @@
   <head>
     <title>WanLife</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap" rel="stylesheet">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -14,19 +16,13 @@
     <header class="top-page-header">
       <div class='search-bar-contents'>
         <%= link_to image_tag('logo.png', alt: 'ロゴ画像'), root_path, class: "wan_logo" %>
-        <form class="search-form" action="#">  <%#サーチバー部分 ロゴ画像と横並びにしたい。 %>
-          <input class='input-box' placeholder='キーワードから探す'>
-          <button class="search-button">  
-            <div class:"search-icon">検索</div>
-          </button>
-        </form>
       </div>
       <div class="nav">
         <div class="search-menu"></div>
         <ul class=" lists-left"> <%# 画面左側に全て横並びでメニュー表示 %>
-          <li><%= link_to "ドッグラン", "#" ,class:"dogrun_list" %></li>
-          <li><%= link_to "ドッグカフェ" , "#" ,class:"dogcafe_list" %></li>
-          <li><%= link_to "犬OK宿泊施設" , "#" , class:"doghotel_list" %></li>
+          <li><button id="filterDogCafe">ドッグカフェ</button></li>
+          <li><button id="filterDogRun">ドッグラン</button></li>
+          <li><button id="filterBoth">どちらも表示</button></li>
         </ul>
         <ul class='lists-right'>
         <% if user_signed_in? %>

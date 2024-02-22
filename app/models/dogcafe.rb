@@ -1,2 +1,0 @@
-class Dogcafe < ApplicationRecord
-end

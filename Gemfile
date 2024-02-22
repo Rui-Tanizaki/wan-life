@@ -71,5 +71,12 @@ group :test do
   gem "webdrivers"
 end
 
+group :production do
+  gem 'pg'
+end
+
   gem 'devise'
   gem 'nokogiri'
+  gem 'dotenv-rails'
+  gem 'active_hash'
+  gem 'pry'

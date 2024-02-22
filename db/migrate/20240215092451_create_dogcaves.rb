@@ -7,6 +7,8 @@ class CreateDogcaves < ActiveRecord::Migration[7.0]
       t.string :cafe_region
       t.string :cafe_locality
       t.string :cafe_street_address
+      t.float  :cafe_latitude
+      t.float  :cafe_longitude
 
       t.timestamps
     end

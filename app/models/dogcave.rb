@@ -1,0 +1,2 @@
+class Dogcave < ApplicationRecord
+end
