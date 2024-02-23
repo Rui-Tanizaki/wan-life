@@ -3,35 +3,25 @@ class DogCentersController < ApplicationController
     if params[:ne] && params[:sw]
       ne_lat, ne_lng = params[:ne].split(',').map(&:to_f)
       sw_lat, sw_lng = params[:sw].split(',').map(&:to_f)
+      filter_type = params[:filter] || 'Both'
 
-      dogcaves = Dogcave.where(
-        cafe_latitude: sw_lat..ne_lat,
-        cafe_longitude: sw_lng..ne_lng
-      ).limit(15).map do |dc|
-        {
-          name: dc.cafe_name,
-          description: dc.cafe_discription,
-          latitude: dc.cafe_latitude,
-          longitude: dc.cafe_longitude,
-          type: 'Dogcave'
-        }
+      facilities = []
+
+      if %w[Dogcave Both].include?(filter_type)
+        facilities += Dogcave.where(
+          cafe_latitude: sw_lat..ne_lat,
+          cafe_longitude: sw_lng..ne_lng
+        ).limit(15).map { |dc| format_facility(dc, 'Dogcave') }
       end
 
-      dogruns = Dogrun.where(
-        run_latitude: sw_lat..ne_lat,
-        run_longitude: sw_lng..ne_lng
-      ).limit(30).map do |dr|
-        {
-          name: dr.run_name,
-          description: dr.run_discription,
-          latitude: dr.run_latitude,
-          longitude: dr.run_longitude,
-          type: 'Dogrun'
-        }
+      if %w[Dogrun Both].include?(filter_type)
+        facilities += Dogrun.where(
+          run_latitude: sw_lat..ne_lat,
+          run_longitude: sw_lng..ne_lng
+        ).limit(30).map { |dr| format_facility(dr, 'Dogrun') }
       end
 
-      # Dogcave と Dogrun のデータを統合
-      @facilities = (dogcaves + dogruns).take(20)
+      @facilities = facilities.take(20)
     else
       set_default_location
       @facilities = []
@@ -43,8 +33,27 @@ class DogCentersController < ApplicationController
     end
   end
 
-
   private
+
+  def format_facility(facility, type)
+    if type == 'Dogcave'
+      {
+        name: facility.cafe_name,
+        description: facility.cafe_discription,
+        latitude: facility.cafe_latitude,
+        longitude: facility.cafe_longitude,
+        type:
+      }
+    elsif type == 'Dogrun'
+      {
+        name: facility.run_name,
+        description: facility.run_discription,
+        latitude: facility.run_latitude,
+        longitude: facility.run_longitude,
+        type:
+      }
+    end
+  end
 
   def set_default_location
     if user_signed_in?
@@ -52,8 +61,8 @@ class DogCentersController < ApplicationController
       @latitude = prefecture_data.latitude
       @longitude = prefecture_data.longitude
     else
-      @latitude = 35.681236  # デフォルトの緯度（例：東京駅）
-      @longitude = 139.767125  # デフォルトの経度（例：東京駅）
+      @latitude = 35.681236 # デフォルトの緯度（例：東京駅）
+      @longitude = 139.767125 # デフォルトの経度（例：東京駅）
     end
   end
 end

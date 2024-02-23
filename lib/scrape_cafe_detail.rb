@@ -53,8 +53,8 @@ def scrape_cafe_detail(id)
 
   # データベースに保存
   if dogcave.save
-    puts "保存に成功しました"
+    puts '保存に成功しました'
   else
-    puts "保存に失敗しました: #{dogcafe.errors.full_messages.join(", ")}"
+    puts "保存に失敗しました: #{dogcafe.errors.full_messages.join(', ')}"
   end
 end

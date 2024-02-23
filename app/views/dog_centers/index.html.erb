@@ -1,6 +1,5 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=ENV['GOOGLE_MAPS_API_KEY']%>&callback=initMap&language=ja"></script>
 
-<!-- 地図を表示する要素 -->
 <div id="map" style="height: 69vh; width: 100%;"></div>
 
   <footer>
@@ -17,12 +16,12 @@
     </div>
   </footer>
 
-<!-- ユーザーの緯度・経度をグローバル変数として定義 -->
 <script type="text/javascript">
   var userLatitude = <%= @latitude.to_json %>;
   var userLongitude = <%= @longitude.to_json %>;
   var allMarkers = [];
   var updateTimeout;
+  var currentFilter = 'Both'
 
   var dogcaveIconUrl = '<%= asset_path('dogcave_icon.jpg') %>';
   var dogrunIconUrl = '<%= asset_path('dogrun_icon.jpg') %>';
@@ -39,64 +38,81 @@
       console.error('コピーに失敗しました', err);
     });
   }
+
+  function setFilter(filterType) {
+    currentFilter = filterType;
+    updateMarkers(map);
+  }
   
   function addMarkers(facilities, map) {
     clearMarkers();
-  
+    
     facilities.forEach(function(facility) {
-      var position;
-      var icon;
+      if (currentFilter !== 'Both' && facility.type !== currentFilter) {
+        return;
+      }
+
+      var position = { lat: parseFloat(facility.latitude), lng: parseFloat(facility.longitude) };
+      var icon = facility.type === 'Dogcave' ? dogcaveIconUrl : dogrunIconUrl;
   
       var lat = parseFloat(facility.latitude);
       var lng = parseFloat(facility.longitude);
-  
-      if (!isNaN(lat) && !isNaN(lng)) {
-        position = { lat: lat, lng: lng };
-  
-        if (facility.type === 'Dogcave') {
-          icon = { url: dogcaveIconUrl, scaledSize: new google.maps.Size(32, 32) };
-        } else if (facility.type === 'Dogrun') {
-          icon = { url: dogrunIconUrl, scaledSize: new google.maps.Size(32, 32) };
-        }
-  
-        var marker = new google.maps.Marker({ position: position, map: map, title: facility.name, icon: icon });
-  
+
+      var marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        title: facility.name,
+        icon: { url: icon, scaledSize: new google.maps.Size(32, 32) }
+      });
+
         marker.addListener('click', function() {
           copyTextToClipboard(facility.name);
           alert(facility.name + " がコピーされました。");
-        });
-  
-        allMarkers.push(marker);
-      }
+      });
+      
+      allMarkers.push(marker);
     });
   }
-
+  
+  document.getElementById('filterDogCafe').addEventListener('click', function() {
+    setFilter('Dogcave');
+  });
+  document.getElementById('filterDogRun').addEventListener('click', function() {
+    setFilter('Dogrun');
+  });
+  document.getElementById('filterBoth').addEventListener('click', function() {
+    setFilter('Both');
+  });
+  
+  var map;
+  
   function initMap() {
     var mapCenter = new google.maps.LatLng(userLatitude, userLongitude);
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: mapCenter
+  });
   
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 14,
-      center: mapCenter
-    });
-  
-    map.addListener('bounds_changed', function() {
-      clearTimeout(updateTimeout);
-      updateTimeout = setTimeout(function() {
-        updateMarkers(map);
-      }, 5000); // 5秒後にマーカーを更新
+  map.addListener('bounds_changed', function() {
+    clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(function() {
+      updateMarkers(map);
+    }, 
+    5000);
     });
   }
   
-  function updateMarkers(map) {
+  function updateMarkers() {
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
-  
+    
     fetch(`/dog_centers.json?ne=${ne.lat()},${ne.lng()}&sw=${sw.lat()},${sw.lng()}`)
-      .then(response => response.json())
-      .then(facilities => {
-        addMarkers(facilities, map);
-      });
+    .then(response => response.json())
+    .then(facilities => {
+      addMarkers(facilities, map);
+    });
   }
   
   document.addEventListener('turbolinks:load', function() {
